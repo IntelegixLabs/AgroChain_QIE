@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { NftContext } from '../frontend/NftContext/NftProvider';
 import farmer from './farmer.png'
 
+const QIE_EXPLORER_BASE_URL = (process.env.REACT_APP_QIE_EXPLORER_URL || 'https://www.mainnet.qie.digital').replace(/\/$/, '')
+
 const Navigation = ({ web3Handler }) => {
     const { account, setAccount, accountType, setAccountType } = useContext(NftContext);
     const navigate = useNavigate();
@@ -44,7 +46,7 @@ const Navigation = ({ web3Handler }) => {
                         <NavLink className="nav-btn btn btn-secondary btn-sm btn-block" to={`/register`}><i className="fa fa-sign-in-alt fa-fw"></i> Register </NavLink>
                     </li>}
                     <li className="nav-item nav-item-btn mb-2">
-                        {account ? (<><button className="nav-btn btn btn-secondary btn-sm btn-block"><a href={`https://rinkeby.etherscan.io/address/${account}`} target="_blank"
+                        {account ? (<><button className="nav-btn btn btn-secondary btn-sm btn-block"><a href={`${QIE_EXPLORER_BASE_URL}/address/${account}`} target="_blank"
                             rel="noopener noreferrer" > {account.slice(0, 5) + '...' + account.slice(38, 42)}</a></button>
                             <button onClick={logout} className="nav-btn btn btn-danger btn-sm btn-block ms-2"><i className="fa fa-sign-out-alt fa-fw"></i> Disconnect Wallet </button></>) : (
                             <button onClick={web3Handler} className="nav-btn btn btn-success btn-sm btn-block ms-2"><i className="fa fa-user-plus fa-fw"></i> Connect Wallet </button>)}

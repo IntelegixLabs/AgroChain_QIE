@@ -40,6 +40,9 @@ const api = axios.create({
 	baseURL: `https://min-api.cryptocompare.com/`
 })
 
+const QIE_TOKEN_SYMBOL = process.env.REACT_APP_QIE_TOKEN_SYMBOL || 'QIE'
+const QIE_NETWORK_LABEL = process.env.REACT_APP_QIE_NETWORK_LABEL || 'QIE Testnet'
+
 
 const Profile = () => {
 	const { account, nft, balance, marketplace, isLoading } = useContext(NftContext);
@@ -52,7 +55,7 @@ const Profile = () => {
 	const [farmername, setfarmername] = useState('')
 	const [rapydId, setrapydId] = useState('')
 	const [govtid, setgovtid] = useState('')
-	const [usd, setusd] = useState(0)
+	const [qieUsdRate, setQieUsdRate] = useState(0)
 	const [co2, setco2] = useState('')
 	const [location, setlocation] = useState('')
 	const [area, setarea] = useState('')
@@ -78,12 +81,15 @@ const Profile = () => {
 		setSelectedFile(event.target.files[0])
 	}
 
-	const ETH_to_USD = () => {
-		api.get('data/price?fsym=ETH&tsyms=USD').then(({ data }) => {
-			/*console.log(data["USD"]);*/
-			setusd(data["USD"])
-		})
+const fetchQieToUsd = async () => {
+	try {
+		const { data } = await api.get('data/price?fsym=QIE&tsyms=USD')
+		setQieUsdRate(data["USD"] || 0)
+	} catch (error) {
+		console.warn('Unable to fetch QIE/USD spot price from CryptoCompare', error)
+		setQieUsdRate(0)
 	}
+}
 
 	const createNFT = async () => {
 		/*console.log("NFT");*/
@@ -117,6 +123,7 @@ const Profile = () => {
 	const [listedItems, setListedItems] = useState([])
 	const [soldItems, setSoldItems] = useState([])
 	const [purchasedItems, setPurchasedItems] = useState([])
+	const priceInNumber = Number(price) || 0
 
 	const loadListedItems = async () => {
 		// Load all sold items that the user listed
@@ -213,7 +220,7 @@ const Profile = () => {
 
 	useEffect(() => {
 		if (isLoading) {
-			ETH_to_USD()
+			fetchQieToUsd()
 			loadListedItems()
 		}
 	}, [isLoading]);
@@ -227,7 +234,7 @@ const Profile = () => {
 			<div className="row">
 				<div className="col-md-12">
 					<h2 className="mb-0">{farmername ? 'Farmer': 'Customer'} Wallet</h2>
-					<p className="text-muted type-6 mt-0"><i className="fa fa-circle fa-fw fa-sm text-success"></i> Ethereum Test Network</p>
+					<p className="text-muted type-6 mt-0"><i className="fa fa-circle fa-fw fa-sm text-success"></i> {QIE_NETWORK_LABEL}</p>
 				</div>
 			</div>
 			<div className="row">
@@ -246,7 +253,7 @@ const Profile = () => {
 										</div></>)}
 								<div className="col-md-8 text-center">
 									<br />
-										<h2 className="mt-1 text-dark-grey">{balance.slice(0, 5)} ETH</h2>
+										<h2 className="mt-1 text-dark-grey">{(balance || '0').slice(0, 6)} {QIE_TOKEN_SYMBOL}</h2>
 								</div>
 							</div>
 
@@ -369,7 +376,7 @@ const Profile = () => {
 																	<div className="row mt-3">
 																		<div className="col-md-6">
 																			<p className="text-success type-6 my-0">
-																				<i className="fab fa-ethereum"> </i> {ethers.utils.formatEther(item.totalPrice)}
+																				<i className="fa fa-coins"> </i> {ethers.utils.formatEther(item.totalPrice)} {QIE_TOKEN_SYMBOL}
 																			</p>
 																			{/*<p className="text-primary type-7 my-0">*/}
 																			{/*	Offer <i className="fa fa-dollar-sign"> </i> {ethers.utils.formatEther(item.totalPrice) * (100 / 101)}*/}
@@ -380,7 +387,7 @@ const Profile = () => {
 																			{/*	<button type="button" className="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#nft2">Buy Now</button>*/}
 																			{/*</div>*/}
 																			<p className="text-danger type-6 my-0">
-																				<i className="fab fa-ethereum"> </i> {ethers.utils.formatEther(item.totalPrice) * (100 / 101)}
+																				<i className="fa fa-coins"> </i> {ethers.utils.formatEther(item.totalPrice) * (100 / 101)} {QIE_TOKEN_SYMBOL}
 																			</p>
 																		</div>
 																	</div>
@@ -411,10 +418,10 @@ const Profile = () => {
 																	<div className="row mt-3">
 																		<div className="col-md-6">
 																			<p className="text-danger type-6 my-0">
-																				<i className="fab fa-ethereum"> </i>{ethers.utils.formatEther(item.totalPrice)}
+																				<i className="fa fa-coins"> </i>{ethers.utils.formatEther(item.totalPrice)} {QIE_TOKEN_SYMBOL}
 																			</p>
 																			<p className="text-success type-6 my-0">
-																				<i className="fab fa-ethereum"> </i>{ethers.utils.formatEther(item.price)}
+																				<i className="fa fa-coins"> </i>{ethers.utils.formatEther(item.price)} {QIE_TOKEN_SYMBOL}
 																			</p>
 																		</div>
 																		<div className="col-md-6">
@@ -452,7 +459,7 @@ const Profile = () => {
 																	<div className="row mt-3">
 																		<div className="col-md-6">
 																			<p className="text-success type-6 my-0">
-																				<i className="fab fa-ethereum"> </i>{ethers.utils.formatEther(item.totalPrice)}
+																				<i className="fa fa-coins"> </i>{ethers.utils.formatEther(item.totalPrice)} {QIE_TOKEN_SYMBOL}
 																			</p>
 																		</div>
 																		<div className="col-md-6">
@@ -505,9 +512,9 @@ const Profile = () => {
 										</div>
 										<br />
 										<div className="form-group">
-												<h6><i className="fab fa-ethereum"> </i> Price (ETH) = { usd * price } USD <span className="text-danger">*</span></h6>
-												<Form.Control onChange={(e) => setPrice(e.target.value)} className="form-control" required type="number" placeholder="Enter Selling Price" />
-												<p className="text-muted type-7 mt-1 mb-0">Enter the Price in ETH for selling the Carbon credits.</p>
+												<h6><i className="fa fa-coins"> </i> Price ({QIE_TOKEN_SYMBOL}) = { (qieUsdRate * priceInNumber).toFixed(2) } USD <span className="text-danger">*</span></h6>
+												<Form.Control onChange={(e) => setPrice(e.target.value)} className="form-control" required type="number" placeholder={`Enter Selling Price in ${QIE_TOKEN_SYMBOL}`} />
+												<p className="text-muted type-7 mt-1 mb-0">Enter the price in {QIE_TOKEN_SYMBOL} for selling the carbon credits.</p>
 										</div>
 
                     <div className="row mt-4">

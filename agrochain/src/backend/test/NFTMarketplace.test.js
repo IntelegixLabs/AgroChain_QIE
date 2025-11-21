@@ -72,7 +72,7 @@ describe("NFTMarketplace", function () {
 
 
     it("Should track newly created item, transfer NFT from seller to marketplace and emit Offered event", async function () {
-      // addr1 offers their nft at a price of 1 ether
+      // addr1 offers their nft at a price of 1 QIE
       await expect(marketplace.connect(addr1).makeItem(nft.address, 1 , toWei(price)))
         .to.emit(marketplace, "Offered")
         .withArgs(
@@ -115,8 +115,8 @@ describe("NFTMarketplace", function () {
       await marketplace.connect(addr1).makeItem(nft.address, 1 , toWei(price))
     })
     it("Should update item as sold, pay seller, transfer NFT to buyer, charge fees and emit a Bought event", async function () {
-      const sellerInitalEthBal = await addr1.getBalance()
-      const feeAccountInitialEthBal = await deployer.getBalance()
+      const sellerInitialQieBal = await addr1.getBalance()
+      const feeAccountInitialQieBal = await deployer.getBalance()
       // fetch items total price (market fees + item price)
       totalPriceInWei = await marketplace.getTotalPrice(1);
       // addr 2 purchases item.
@@ -130,18 +130,18 @@ describe("NFTMarketplace", function () {
           addr1.address,
           addr2.address
         )
-      const sellerFinalEthBal = await addr1.getBalance()
-      const feeAccountFinalEthBal = await deployer.getBalance()
+      const sellerFinalQieBal = await addr1.getBalance()
+      const feeAccountFinalQieBal = await deployer.getBalance()
       // Item should be marked as sold
       expect((await marketplace.items(1)).sold).to.equal(true)
       // Seller should receive payment for the price of the NFT sold.
-      expect(+fromWei(sellerFinalEthBal)).to.equal(+price + +fromWei(sellerInitalEthBal))
+      expect(+fromWei(sellerFinalQieBal)).to.equal(+price + +fromWei(sellerInitialQieBal))
       // feeAccount should receive fee
-      expect(+fromWei(feeAccountFinalEthBal)).to.equal(+fee + +fromWei(feeAccountInitialEthBal))
+      expect(+fromWei(feeAccountFinalQieBal)).to.equal(+fee + +fromWei(feeAccountInitialQieBal))
       // The buyer should now own the nft
       expect(await nft.ownerOf(1)).to.equal(addr2.address);
     })
-    it("Should fail for invalid item ids, sold items and when not enough ether is paid", async function () {
+    it("Should fail for invalid item ids, sold items and when not enough QIE is paid", async function () {
       // fails for invalid item ids
       await expect(
         marketplace.connect(addr2).purchaseItem(2, {value: totalPriceInWei})
@@ -149,12 +149,12 @@ describe("NFTMarketplace", function () {
       await expect(
         marketplace.connect(addr2).purchaseItem(0, {value: totalPriceInWei})
       ).to.be.revertedWith("item doesn't exist");
-      // Fails when not enough ether is paid with the transaction. 
-      // In this instance, fails when buyer only sends enough ether to cover the price of the nft
+      // Fails when not enough QIE is paid with the transaction. 
+      // In this instance, fails when buyer only sends enough QIE to cover the price of the nft
       // not the additional market fee.
       await expect(
         marketplace.connect(addr2).purchaseItem(1, {value: toWei(price)})
-      ).to.be.revertedWith("not enough ether to cover item price and market fee"); 
+      ).to.be.revertedWith("not enough QIE to cover item price and market fee"); 
       // addr2 purchases item 1
       await marketplace.connect(addr2).purchaseItem(1, {value: totalPriceInWei})
       // addr3 tries purchasing item 1 after its been sold 

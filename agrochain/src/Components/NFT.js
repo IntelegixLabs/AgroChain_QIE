@@ -7,6 +7,8 @@ import './loading.css';
 import { Button } from 'react-bootstrap';
 import { NftContext } from '../frontend/NftContext/NftProvider';
 
+const QIE_TOKEN_SYMBOL = process.env.REACT_APP_QIE_TOKEN_SYMBOL || 'QIE'
+
 export const NFT = () => {
     const { account, marketplace, nft, balance,isLoading } = useContext(NftContext);
     const navigate = useNavigate();
@@ -110,7 +112,7 @@ export const NFT = () => {
                                     <div className="card border-secondary  mb-3" >
                                         <div className="card-header">{account.slice(0, 12) + '...' + account.slice(29,)}</div>
                                         <div className="card-body text-success ">
-                                            <h5 className="card-title"><i className="fab fa-ethereum"> </i>   {balance.slice(0, 6)} </h5>
+                                            <h5 className="card-title"><i className="fa fa-coins"> </i>   {(balance || '0').slice(0, 6)} {QIE_TOKEN_SYMBOL}</h5>
                                             <p className="card-text">Invest in the Greener Future, but buying NFT from farmers, and providing them resources to invest in sustainable farming methods</p>
                                         </div>
                                     </div>
@@ -153,7 +155,7 @@ export const NFT = () => {
                                                 <div className="row mt-3">
                                                     <div className="col-md-6">
                                                         <p className="text-success type-6 my-0">
-                                                            <i className="fab fa-ethereum"> </i> {ethers.utils.formatEther(item.totalPrice)}
+                                                            <i className="fa fa-coins"> </i> {ethers.utils.formatEther(item.totalPrice)} {QIE_TOKEN_SYMBOL}
                                                         </p>
                                                     </div>
                                                     <div className="col-md-6">

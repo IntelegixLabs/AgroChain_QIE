@@ -52,7 +52,7 @@ export const Certificate = () => {
                     {/*<span className="block">has purchased </span>*/}
                     <h3>{nfts.name}</h3> <br />
                     <span className="pm-earned-text block">
-                        was succcessfully purchased on ethreum value of  <i className="fab fa-ethereum"> </i> {ethers.utils.formatEther(nfts.totalPrice)}
+                        was successfully purchased on the QIE network for <i className="fa fa-coins"> </i> {ethers.utils.formatEther(nfts.totalPrice)} QIE
                     </span>
                     <br />
                     <span className="block">For saving </span>

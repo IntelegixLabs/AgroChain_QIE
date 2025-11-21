@@ -4,7 +4,7 @@
 
 The United States Environmental Protection Agency (EPA) estimates that 10% of CO2 is emitted by the Agri sector. On one hand, Agri companies have sustainable products and services to offer to the growers. On the other hand, without proper economic incentives, farmers are reluctant to adopt sustainable practices. Centralized platform business models have so far not succeeded in creating economic value for the farmers, even while the demand for a voluntary carbon market is increasing. What technologies and business models can enable financially incentivizing farmers to implement climate-smart practices? What are the ways the buyer has proof of authenticity? In what ways the participants including investors can derive economic value?
 	
-<strong>ArgoChain </strong>is an NFT application Based on the Ethereum Blockchain written in Solidity Smart Contract, and using the power of React Frontend, and ether.js to interact with the Smart Contract present in the Ethereum Blockchain, a user can register as a Framer in the application, with all relevant information, Upload & Mint (In IPFs), buy and Sell NFT, in the ArgoChain NFT marketplace. The Industries then can buy those NFTs from market place granting them carbon credits and also investing money in farmers so that they can adopt more sustainable farming practices.
+<strong>ArgoChain </strong>is an NFT application powered by the QIE Blockchain (EVM-compatible) and written in Solidity Smart Contracts. Using React and ethers.js to interact with the QIE network, a user can register as a farmer in the application, upload & mint assets to IPFS, and buy or sell NFTs inside the ArgoChain marketplace. Industrial buyers can purchase those NFTs on QIE to grant carbon credits and invest directly in farmers so they can adopt sustainable practices.
 
 It provides a way for farmers to sell carbon credits in the form of NFT to industrial buyers who need to buy carbon credits to achieve sustainability goals, thus giving farmers money to invest in more sustainable farming practices, and a win-win situation for all, the Air Quality verification is done using IoT devices, thus acting as a verification mechanism to ensure, that money is invested by farmers to adopt more sustainable farming methods.
 
@@ -18,6 +18,34 @@ It provides a way for farmers to sell carbon credits in the form of NFT to indus
 - User Dashboard to view all the NFT Minted, sold, and Purchased.
 - Customer/ Industries can buy NFT carbon credits to meet their ESG Goals and remain Carbon neutral companies.
 - Money in the form of Cryptocurrency is directly transferred to farmers without commission and middlemen, so they can invest the money in adopting more sustainable farming methods.
+
+## QIE Network Configuration
+- **Testnet**: `https://rpc1testnet.qie.digital` — Chain ID `1983 (0x7BF)`
+- **Mainnet**: `https://rpc1.qie.digital` — Chain ID `1990 (0x7C6)`
+- **Native token**: QIE with 18 decimals and Explorer `https://www.mainnet.qie.digital`
+
+### Backend / Hardhat `.env`
+Create `agrochain/.env` with the following keys:
+```
+PRIVATE_KEY=your_private_key_without_0x
+QIE_TESTNET_RPC_URL=https://rpc1testnet.qie.digital
+QIE_TESTNET_CHAIN_ID=1983
+QIE_MAINNET_RPC_URL=https://rpc1.qie.digital
+QIE_MAINNET_CHAIN_ID=1990
+```
+
+### Frontend `.env.local`
+Create `agrochain/.env.local` so the React app and wallet helpers know how to connect to QIE:
+```
+REACT_APP_QIE_CHAIN_ID=0x7BF
+REACT_APP_QIE_NETWORK_NAME=QIE Testnet
+REACT_APP_QIE_NETWORK_LABEL=QIE Testnet
+REACT_APP_QIE_NATIVE_NAME=QIE
+REACT_APP_QIE_RPC_URL=https://rpc1testnet.qie.digital
+REACT_APP_QIE_EXPLORER_URL=https://www.testnet.qie.digital
+REACT_APP_QIE_TOKEN_SYMBOL=QIE
+```
+Replace the values with mainnet settings when you are ready to go live.
 
 ### Live Application Demo
 
@@ -57,30 +85,42 @@ c:\windows\system32\cmd.exe /k "C:\Users\raj71\Downloads\node-v16.20.0-win-x86\n
 npm install
 ```
 
-### 5. Boot up local Hardhat development blockchain
+### 5. (Optional) Boot up a local Hardhat development blockchain
 
 ```
 npx hardhat node
 ```
 
-### 6. Connect development blockchain accounts to Metamask
-- Copy the private key of the addresses and import it to Metamask
-- Connect your metamask to hardhat blockchain, network 127.0.0.1:8545.
-- If you have not added hardhat to the list of networks on your metamask, open up a browser, click the fox icon, then click the top center dropdown button that lists all the available networks then click add networks. A form should pop up. For the "Network Name" field enter "Hardhat". For the "New RPC URL" field enter "http://127.0.0.1:8545". For the chain ID enter "31337". Then click save. 
+Use this only for isolated testing. For end-to-end flows target the QIE testnet or mainnet.
+
+### 6. Connect MetaMask (or QIE Wallet) to QIE
+- Import the account that matches the `PRIVATE_KEY` used in `agrochain/.env`.
+- Add a **QIE Testnet** network with:
+  - `Network Name`: `QIE Testnet`
+  - `New RPC URL`: `https://rpc1testnet.qie.digital`
+  - `Chain ID`: `1983`
+  - `Currency Symbol`: `QIE`
+  - `Block Explorer URL`: `https://www.testnet.qie.digital`
+- Switch to **QIE Mainnet** by using:
+  - `Network Name`: `QIE Mainnet`
+  - `New RPC URL`: `https://rpc1.qie.digital`
+  - `Chain ID`: `1990`
+  - `Currency Symbol`: `QIE`
+  - `Block Explorer URL`: `https://www.mainnet.qie.digital`
+- Use the [QIE Faucet](https://www.qie.digital/faucet) to fund test accounts.
 
 <p align="center">
   <img src="DATA/metamask_config.png" />
 </p>
 
+### 7(a). Deploy Smart Contracts (QIE Testnet)
+```
+npx hardhat run src/backend/scripts/deploy.js --network qieTestnet
+```
 
-### 7(a). Migrate Smart Contracts
+### 7(b). Deploy Smart Contracts (QIE Mainnet)
 ```
-npx hardhat run src/backend/scripts/deploy.js --network localhost
-```
-
-### 7(b). Migrate Smart Contracts (Goerli Network)
-```
-npx hardhat run src/backend/scripts/deploy.js --network goerli
+npx hardhat run src/backend/scripts/deploy.js --network qieMainnet
 ```
 
 ### 8. Run Tests
@@ -126,6 +166,18 @@ npm run start
   <img src="DATA/screenshots/11.png" width="400"/>
 </p>
 <br />
+
+## QIE Ecosystem Resources
+- [QIE GitBook Documentation](https://github.com/Qi-Blockchain)
+- [QIE Developer Docs](https://docs.qie.digital/developer-docs)
+- [SDK & Token Creator Guide](https://qiedex.qie.digital)
+- [QIE Testnet Dashboard](https://www.testnet.qie.digital)
+- [QIE Mainnet Explorer](https://www.mainnet.qie.digital)
+- [Validator Portal](https://mainnet.qie.digital/validators)
+- [QIE Wallet](https://www.qiewallet.me)
+- [Free Test Tokens](https://www.qie.digital/faucet)
+- [Discord](https://discord.com/invite/9HCNTyqkwa)
+- [Telegram Support](https://t.me/HovRonQiblockchain)
 
 
 ### Thank You
