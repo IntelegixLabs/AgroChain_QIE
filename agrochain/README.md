@@ -8,27 +8,27 @@ This React/Hardhat workspace powers the AgroChain experience and is now fully al
 ```mermaid
 flowchart LR
     subgraph Users
-        FarmerApp(Farmer / Buyer UI)\nReact + ethers.js
+        FarmerApp(Farmer / Buyer UI<br/>React + ethers.js)
     end
 
     subgraph Frontend["React Frontend"]
         UI[Components / Pages]
         Context[NFT Context Store]
-        Wallet[Wallet Connector\nMetaMask / QIE Wallet]
+        Wallet[Wallet Connector<br/>MetaMask / QIE Wallet]
         UI --> Context --> Wallet
     end
 
     subgraph Backend["Node/Hardhat + Solidity"]
         Deploy[Hardhat Deploy Script]
-        Contracts[Solidity Contracts\nNFT + Marketplace]
-        IPFS[IPFS Pinning\n(ipfs-http-client)]
+        Contracts[Solidity Contracts<br/>NFT + Marketplace]
+        IPFS[IPFS Pinning<br/>ipfs-http-client]
         Deploy --> Contracts
     end
 
     subgraph Services["Supporting Services"]
-        IoT[IOT Sensors\nAzure IoT Hub]
+        IoT[IOT Sensors<br/>Azure IoT Hub]
         ML[ML / Carbon Scoring]
-        API[.NET Rapyd API\nPollution + Payments]
+        API[.NET Rapyd API<br/>Pollution + Payments]
     end
 
     subgraph QIE["QIE Blockchain"]
