@@ -4,6 +4,56 @@ This React/Hardhat workspace powers the AgroChain experience and is now fully al
 
 ---
 
+## Architecture Diagram
+```mermaid
+flowchart LR
+    subgraph Users
+        FarmerApp(Farmer / Buyer UI)\nReact + ethers.js
+    end
+
+    subgraph Frontend["React Frontend"]
+        UI[Components / Pages]
+        Context[NFT Context Store]
+        Wallet[Wallet Connector\nMetaMask / QIE Wallet]
+        UI --> Context --> Wallet
+    end
+
+    subgraph Backend["Node/Hardhat + Solidity"]
+        Deploy[Hardhat Deploy Script]
+        Contracts[Solidity Contracts\nNFT + Marketplace]
+        IPFS[IPFS Pinning\n(ipfs-http-client)]
+        Deploy --> Contracts
+    end
+
+    subgraph Services["Supporting Services"]
+        IoT[IOT Sensors\nAzure IoT Hub]
+        ML[ML / Carbon Scoring]
+        API[.NET Rapyd API\nPollution + Payments]
+    end
+
+    subgraph QIE["QIE Blockchain"]
+        Testnet[(QIE Testnet 1983)]
+        Mainnet[(QIE Mainnet 1990)]
+    end
+
+    FarmerApp --> UI
+    Wallet --> QIE
+    Context --> Contracts
+    Contracts -.->|ABI + address JSON| UI
+    Deploy -->|ABI + Address| Frontend
+
+    IPFS --> UI
+    IoT --> ML --> API --> UI
+    API --> Wallet
+
+    Contracts --> Testnet
+    Contracts --> Mainnet
+
+    QIE <-->|RPC / Explorer| Wallet
+```
+
+---
+
 ## 1. Prerequisites
 - Node.js 16+
 - npm 8+
