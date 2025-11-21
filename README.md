@@ -49,7 +49,7 @@ Replace the values with mainnet settings when you are ready to go live.
 
 ### Live Application Demo
 
-For video demostration refer to the YouTube link <a href="https://www.youtube.com/watch?v=eBz3w8_5sUw">here.</a> 
+For video demostration refer to the YouTube link <a href="">here.</a> 
 
 ## 1. Project Architecture
 
